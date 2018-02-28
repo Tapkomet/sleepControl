@@ -20,7 +20,7 @@ public class AlarmActivity extends AppCompatActivity
     final Context context = this;
 
     Timer sound_timer = new Timer();
-    AlarmReceiver alarmReceiver = new AlarmReceiver();
+    public static AlarmReceiver alarmReceiver = new AlarmReceiver();
 
     int solution;
 
@@ -107,7 +107,7 @@ public class AlarmActivity extends AppCompatActivity
 
     void makePuzzle()
     {
-        int sign = (int) (Math.random() * 4);
+        int sign = (int) (Math.random() * 3);
 
         int one = 1 + (int) (Math.random() * 20);
         int two = 1 + (int) (Math.random() * 20);
@@ -122,11 +122,6 @@ public class AlarmActivity extends AppCompatActivity
             case 2:
                 solution = one * two;
                 ((TextView)findViewById(R.id.puzzle)).setText("" + one + " * " + two + " =");
-                break;
-
-            case 3:
-                solution = one / two;
-                ((TextView)findViewById(R.id.puzzle)).setText("" + one + " / " + two + " =");
                 break;
 
             default:

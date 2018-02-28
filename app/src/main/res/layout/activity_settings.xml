@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.tapkomet.sleepcontrol.SettingsActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/waketime_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:text="WAKE UP AT"
+                android:textAlignment="center"
+                android:textSize="24sp" />
+
+            <TimePicker
+                android:id="@+id/waketime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:timePickerMode="clock" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="50dp" />
+
+            <TextView
+                android:id="@+id/sleeptime_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:text="GO TO SLEEP AT"
+                android:textAlignment="center"
+                android:textSize="24sp" />
+
+            <TimePicker
+                android:id="@+id/sleeptime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:timePickerMode="clock" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</android.support.constraint.ConstraintLayout>
