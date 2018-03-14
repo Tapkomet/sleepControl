@@ -20,6 +20,7 @@ public class SleepAlarmReceiver extends BroadcastReceiver
 
     public void setAlarm(Context context, Calendar time)
     {
+        System.out.println("Sleep alarm: "+time);
         Intent intent = new Intent(context, SleepAlarmReceiver.class);
         PendingIntent sender = PendingIntent.getBroadcast(context, 192837, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 

@@ -27,7 +27,7 @@ public class SettingsActivity extends AppCompatActivity
         int wake_hour = preferences.getInt("wake_hour", 7);
         int wake_minute = preferences.getInt("wake_minute", 0);
 
-        int sleep_hour = preferences.getInt("sleep_hour", 23);
+        int sleep_hour = preferences.getInt("sleep_hour", 7);
         int sleep_minute = preferences.getInt("sleep_minute", 0);
 
         int woke_mins = preferences.getInt("woke_mins", 0);
@@ -83,7 +83,7 @@ public class SettingsActivity extends AppCompatActivity
         int hour = preferences.getInt("wake_hour", 7);
         int minute = preferences.getInt("wake_minute", 0);
 
-        int sleep_hour = preferences.getInt("sleep_hour", 23);
+        int sleep_hour = preferences.getInt("sleep_hour", 7);
         int sleep_minute = preferences.getInt("sleep_minute", 0);
 
         time.set(time.get(Calendar.YEAR), time.get(Calendar.MONTH), time.get(Calendar.DAY_OF_MONTH), hour, minute);

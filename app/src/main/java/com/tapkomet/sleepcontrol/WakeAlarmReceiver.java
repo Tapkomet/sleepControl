@@ -20,6 +20,7 @@ public class WakeAlarmReceiver extends BroadcastReceiver
 
     public void setAlarm(Context context, Calendar time)
     {
+        System.out.println("Wake alarm: "+time);
         Intent intent = new Intent(context, WakeAlarmReceiver.class);
         PendingIntent sender = PendingIntent.getBroadcast(context, 192838, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 

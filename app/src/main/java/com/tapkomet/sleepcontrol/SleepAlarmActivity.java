@@ -1,5 +1,6 @@
 package com.tapkomet.sleepcontrol;
 
+import android.content.Context;
 import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -15,7 +16,7 @@ public class SleepAlarmActivity extends AppCompatActivity
 {
     Timer sound_timer = new Timer();
 
-    static SleepAlarmReceiver sleepAlarmReceiver = new SleepAlarmReceiver();
+    public static SleepAlarmReceiver sleepAlarmReceiver = new SleepAlarmReceiver();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -55,7 +56,7 @@ public class SleepAlarmActivity extends AppCompatActivity
         sound_timer.cancel();
         sound_timer.purge();
 
-        new CheckUsageService().startService(new Intent());
+        //new CheckUsageService().startService(new Intent());
 
         super.onBackPressed();
     }
@@ -66,7 +67,7 @@ public class SleepAlarmActivity extends AppCompatActivity
         sound_timer.cancel();
         sound_timer.purge();
 
-        new CheckUsageService().startService(new Intent());
+        //new CheckUsageService().startService(new Intent());
 
         super.onStop();
     }
