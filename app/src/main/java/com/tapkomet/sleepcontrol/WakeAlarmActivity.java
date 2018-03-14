@@ -15,12 +15,12 @@ import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class AlarmActivity extends AppCompatActivity
+public class WakeAlarmActivity extends AppCompatActivity
 {
     final Context context = this;
 
     Timer sound_timer = new Timer();
-    public static AlarmReceiver alarmReceiver = new AlarmReceiver();
+    public static WakeAlarmReceiver alarmReceiver = new WakeAlarmReceiver();
 
     int solution;
 
@@ -28,7 +28,7 @@ public class AlarmActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_alarm);
+        setContentView(R.layout.activity_wake_alarm);
 
         makePuzzle();
 

@@ -9,62 +9,77 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="91dp">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/waketime_text"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-condensed"
-                android:text="WAKE UP AT"
-                android:textAlignment="center"
-                android:textSize="24sp" />
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <TimePicker
-                android:id="@+id/waketime"
+                <TextView
+                    android:id="@+id/waketime_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="WAKE UP AT"
+                    android:textAlignment="center"
+                    android:textSize="24sp" />
+
+                <TimePicker
+                    android:id="@+id/waketime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:timePickerMode="clock" />
+
+                <Button
+                    android:id="@+id/settime_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="Set times"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:timePickerMode="clock" />
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="50dp" />
+                <TextView
+                    android:id="@+id/sleeptime_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="GO TO SLEEP AT"
+                    android:textAlignment="center"
+                    android:textSize="24sp" />
 
-            <TextView
-                android:id="@+id/sleeptime_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-condensed"
-                android:text="GO TO SLEEP AT"
-                android:textAlignment="center"
-                android:textSize="24sp" />
+                <TimePicker
+                    android:id="@+id/sleeptime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:timePickerMode="clock" />
 
-            <TimePicker
-                android:id="@+id/sleeptime"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:timePickerMode="clock" />
-
-            <Button
-                android:id="@+id/settime_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:fontFamily="sans-serif-condensed"
-                android:text="Set times"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+            </LinearLayout>
 
         </LinearLayout>
+
     </ScrollView>
 
 </android.support.constraint.ConstraintLayout>

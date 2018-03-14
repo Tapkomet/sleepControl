@@ -1,12 +1,13 @@
 package com.tapkomet.sleepcontrol;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TimePicker;
 import android.view.View;
+import android.widget.Toast;
 
 
 import java.util.Calendar;
@@ -21,12 +22,18 @@ public class SettingsActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        SharedPreferences sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
-        int wake_hour = sharedPref.getInt("wake_hour", 7);
-        int wake_minute = sharedPref.getInt("wake_minute", 0);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        int wake_hour = preferences.getInt("wake_hour", 7);
+        int wake_minute = preferences.getInt("wake_minute", 0);
 
-        int sleep_hour = sharedPref.getInt("sleep_hour", 7);
-        int sleep_minute = sharedPref.getInt("sleep_minute", 0);
+        int sleep_hour = preferences.getInt("sleep_hour", 7);
+        int sleep_minute = preferences.getInt("sleep_minute", 0);
+
+        int woke_mins = preferences.getInt("woke_mins", 0);
+        if (woke_mins > 0)
+        {
+            Toast.makeText(this, "You were awake for " + woke_mins + " minutes last night!",  Toast.LENGTH_LONG).show();
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
         {
@@ -42,8 +49,8 @@ public class SettingsActivity extends AppCompatActivity
         {
             public void onTimeChanged(TimePicker view, int hourOfDay, int minute)
             {
-                SharedPreferences sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                SharedPreferences.Editor editor = preferences.edit();
                 editor.putInt("wake_hour", hourOfDay);
                 editor.putInt("wake_minute", minute);
                 editor.apply();
@@ -54,8 +61,8 @@ public class SettingsActivity extends AppCompatActivity
         {
             public void onTimeChanged(TimePicker view, int hourOfDay, int minute)
             {
-                SharedPreferences sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                SharedPreferences.Editor editor = preferences.edit();
                 editor.putInt("sleep_hour", hourOfDay);
                 editor.putInt("sleep_minute", minute);
                 editor.apply();
@@ -77,18 +84,18 @@ public class SettingsActivity extends AppCompatActivity
     {
         Calendar time = Calendar.getInstance();
 
-        SharedPreferences sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
-        int hour = sharedPref.getInt("wake_hour", 7);
-        int minute = sharedPref.getInt("wake_minute", 0);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        int hour = preferences.getInt("wake_hour", 7);
+        int minute = preferences.getInt("wake_minute", 0);
 
-        int sleep_hour = sharedPref.getInt("sleep_hour", 7);
-        int sleep_minute = sharedPref.getInt("sleep_minute", 0);
+        int sleep_hour = preferences.getInt("sleep_hour", 7);
+        int sleep_minute = preferences.getInt("sleep_minute", 0);
 
         time.set(time.get(Calendar.YEAR), time.get(Calendar.MONTH), time.get(Calendar.DAY_OF_MONTH), hour, minute);
 
         if (time.compareTo(Calendar.getInstance()) < 0)
             time.add(Calendar.DAY_OF_MONTH, 1);
-        AlarmActivity.alarmReceiver.setAlarm(activity.getApplicationContext(), time);
+        WakeAlarmActivity.alarmReceiver.setAlarm(activity.getApplicationContext(), time);
 
         time.set(time.get(Calendar.YEAR), time.get(Calendar.MONTH), time.get(Calendar.DAY_OF_MONTH), sleep_hour, sleep_minute);
 

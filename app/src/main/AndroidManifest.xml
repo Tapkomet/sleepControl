@@ -19,7 +19,7 @@
         </activity>
 
         <activity
-            android:name=".AlarmActivity"
+            android:name=".WakeAlarmActivity"
             android:windowSoftInputMode="adjustResize">
         </activity>
 
@@ -29,7 +29,7 @@
         </activity>
 
         <receiver
-            android:name=".AlarmReceiver"
+            android:name=".WakeAlarmReceiver"
             android:process=":remote" />
 
         <receiver
