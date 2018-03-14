@@ -23,8 +23,17 @@
             android:windowSoftInputMode="adjustResize">
         </activity>
 
+        <activity
+            android:name=".SleepAlarmActivity"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+
         <receiver
             android:name=".AlarmReceiver"
+            android:process=":remote" />
+
+        <receiver
+            android:name=".SleepAlarmReceiver"
             android:process=":remote" />
     </application>
 
