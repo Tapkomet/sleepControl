@@ -27,7 +27,7 @@ public class SettingsActivity extends AppCompatActivity
         int wake_hour = preferences.getInt("wake_hour", 7);
         int wake_minute = preferences.getInt("wake_minute", 0);
 
-        int sleep_hour = preferences.getInt("sleep_hour", 7);
+        int sleep_hour = preferences.getInt("sleep_hour", 23);
         int sleep_minute = preferences.getInt("sleep_minute", 0);
 
         int woke_mins = preferences.getInt("woke_mins", 0);
@@ -54,16 +54,18 @@ public class SettingsActivity extends AppCompatActivity
                 else time_conversion_error = true;
 
                 int wake_m = Integer.valueOf(((EditText)findViewById(R.id.wake_mins)).getText().toString());
-                if (wake_m < 60) editor.putInt("wake_minute", wake_h);
+                if (wake_m < 60) editor.putInt("wake_minute", wake_m);
                 else time_conversion_error = true;
 
                 int sleep_h = Integer.valueOf(((EditText)findViewById(R.id.sleep_hours)).getText().toString());
-                if (sleep_h < 24) editor.putInt("sleep_hour", wake_h);
+                if (sleep_h < 24) editor.putInt("sleep_hour", sleep_h);
                 else time_conversion_error = true;
 
                 int sleep_m = Integer.valueOf(((EditText)findViewById(R.id.sleep_mins)).getText().toString());
-                if (sleep_m < 60) editor.putInt("sleep_minute", wake_h);
+                if (sleep_m < 60) editor.putInt("sleep_minute", sleep_m);
                 else time_conversion_error = true;
+
+                editor.commit();
 
                 if (time_conversion_error)
                     Toast.makeText(getApplicationContext(), "Invalid time entered!",  Toast.LENGTH_LONG).show();
@@ -81,7 +83,7 @@ public class SettingsActivity extends AppCompatActivity
         int hour = preferences.getInt("wake_hour", 7);
         int minute = preferences.getInt("wake_minute", 0);
 
-        int sleep_hour = preferences.getInt("sleep_hour", 7);
+        int sleep_hour = preferences.getInt("sleep_hour", 23);
         int sleep_minute = preferences.getInt("sleep_minute", 0);
 
         time.set(time.get(Calendar.YEAR), time.get(Calendar.MONTH), time.get(Calendar.DAY_OF_MONTH), hour, minute);

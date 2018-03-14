@@ -80,6 +80,7 @@ public class CheckUsageService extends IntentService
 
                         SharedPreferences.Editor editor = preferences.edit();
                         editor.putInt("woke_mins", woke_minutes);
+                        editor.commit();
                     }
                 }
             }
