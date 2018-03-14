@@ -37,7 +37,6 @@ public class SleepAlarmActivity extends AppCompatActivity
             {
                 try
                 {
-                    System.out.println("Running");
                     Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
                     Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
                     r.play();

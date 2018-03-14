@@ -26,7 +26,5 @@ public class SleepAlarmReceiver extends BroadcastReceiver
         // Get the AlarmManager service
         AlarmManager am = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
         am.set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), sender);
-
-        System.out.println("Setting sleep alarm: "+time);
     }
 }
