@@ -39,15 +39,22 @@ public class CheckUsageService extends IntentService
                 Thread.sleep(60000);
 
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                int hour = preferences.getInt("wake_hour", 7);
-                int minute = preferences.getInt("wake_minute", 0);
+                int wake_hour = preferences.getInt("wake_hour", 7);
+                int wake_minute = preferences.getInt("wake_minute", 0);
+                int sleep_hour = preferences.getInt("sleep_hour", 7);
+                int sleep_minute = preferences.getInt("sleep_minute", 0);
 
                 Calendar rightNow = Calendar.getInstance();
                 int current_hour = rightNow.get(Calendar.HOUR_OF_DAY);
                 int current_minute = rightNow.get(Calendar.MINUTE);
 
-                if (current_hour >= hour && current_minute >= minute)
+                if (
+                    current_hour >= wake_hour &&
+                    current_minute >= wake_minute &&
+                    current_hour <= sleep_hour &&
+                    current_minute <= sleep_minute)
                 {
+                    // stop checking if phone is turned off or not
                     break;
                 }
                 else

@@ -5,6 +5,7 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.EditText;
 import android.widget.TimePicker;
 import android.view.View;
 import android.widget.Toast;
@@ -30,54 +31,46 @@ public class SettingsActivity extends AppCompatActivity
         int sleep_minute = preferences.getInt("sleep_minute", 0);
 
         int woke_mins = preferences.getInt("woke_mins", 0);
-        if (woke_mins > 0)
-        {
-            Toast.makeText(this, "You were awake for " + woke_mins + " minutes last night!",  Toast.LENGTH_LONG).show();
-        }
+        if (woke_mins > 0) Toast.makeText(this, "You were awake for " + woke_mins + " minutes last night!",  Toast.LENGTH_LONG).show();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-        {
-            ((TimePicker)findViewById(R.id.waketime)).setHour(wake_hour);
-            ((TimePicker)findViewById(R.id.waketime)).setMinute(wake_minute);
-            ((TimePicker)findViewById(R.id.sleeptime)).setHour(sleep_hour);
-            ((TimePicker)findViewById(R.id.sleeptime)).setMinute(sleep_minute);
-        }
+        ((EditText)findViewById(R.id.wake_hours)).setText(Integer.valueOf(wake_hour).toString());
+        ((EditText)findViewById(R.id.wake_mins)).setText(Integer.valueOf(wake_minute).toString());
+        ((EditText)findViewById(R.id.sleep_hours)).setText(Integer.valueOf(sleep_hour).toString());
+        ((EditText)findViewById(R.id.sleep_mins)).setText(Integer.valueOf(sleep_minute).toString());
 
         setTimers();
-
-        ((TimePicker)findViewById(R.id.waketime)).setOnTimeChangedListener(new TimePicker.OnTimeChangedListener()
-        {
-            public void onTimeChanged(TimePicker view, int hourOfDay, int minute)
-            {
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putInt("wake_hour", hourOfDay);
-                editor.putInt("wake_minute", minute);
-                editor.apply();
-            }
-        });
-
-        ((TimePicker)findViewById(R.id.sleeptime)).setOnTimeChangedListener(new TimePicker.OnTimeChangedListener()
-        {
-            public void onTimeChanged(TimePicker view, int hourOfDay, int minute)
-            {
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putInt("sleep_hour", hourOfDay);
-                editor.putInt("sleep_minute", minute);
-                editor.apply();
-            }
-        });
 
         findViewById(R.id.settime_button).setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                setTimers();
+                boolean time_conversion_error = false;
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                SharedPreferences.Editor editor = preferences.edit();
+
+                int wake_h = Integer.valueOf(((EditText)findViewById(R.id.wake_hours)).getText().toString());
+                if (wake_h < 24) editor.putInt("wake_hour", wake_h);
+                else time_conversion_error = true;
+
+                int wake_m = Integer.valueOf(((EditText)findViewById(R.id.wake_mins)).getText().toString());
+                if (wake_m < 60) editor.putInt("wake_minute", wake_h);
+                else time_conversion_error = true;
+
+                int sleep_h = Integer.valueOf(((EditText)findViewById(R.id.sleep_hours)).getText().toString());
+                if (sleep_h < 24) editor.putInt("sleep_hour", wake_h);
+                else time_conversion_error = true;
+
+                int sleep_m = Integer.valueOf(((EditText)findViewById(R.id.sleep_mins)).getText().toString());
+                if (sleep_m < 60) editor.putInt("sleep_minute", wake_h);
+                else time_conversion_error = true;
+
+                if (time_conversion_error)
+                    Toast.makeText(getApplicationContext(), "Invalid time entered!",  Toast.LENGTH_LONG).show();
+                else
+                    setTimers();
             }
         });
-
     }
 
     public void setTimers()
