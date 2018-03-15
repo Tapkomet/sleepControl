@@ -10,9 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <service android:name=".CheckUsageService">
-
-        </service>
+        <service android:enabled="true" android:name=".CheckUsageService"> </service>
 
         <activity
             android:name=".SettingsActivity"
@@ -42,4 +40,6 @@
             android:process=":remote" />
     </application>
 
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
 </manifest>

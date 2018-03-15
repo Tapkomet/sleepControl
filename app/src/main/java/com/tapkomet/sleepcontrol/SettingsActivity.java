@@ -1,12 +1,12 @@
 package com.tapkomet.sleepcontrol;
 
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.EditText;
-import android.widget.TimePicker;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.view.View;
 import android.widget.Toast;
 
@@ -16,6 +16,8 @@ import java.util.Calendar;
 public class SettingsActivity extends AppCompatActivity
 {
     AppCompatActivity activity = this;
+
+    static final int POINTS_TO_NEXT_LEVEL = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -30,8 +32,54 @@ public class SettingsActivity extends AppCompatActivity
         int sleep_hour = preferences.getInt("sleep_hour", 7);
         int sleep_minute = preferences.getInt("sleep_minute", 0);
 
-        int woke_mins = preferences.getInt("woke_mins", 0);
-        if (woke_mins > 0) Toast.makeText(this, "You were awake for " + woke_mins + " minutes last night!",  Toast.LENGTH_LONG).show();
+        int level = preferences.getInt("level", 1);
+        int points = preferences.getInt("points", 0);
+        int streak = preferences.getInt("streak", 0);
+
+        if (preferences.getBoolean("slept", false))
+        {
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean("slept", false);
+
+            int woke_mins = preferences.getInt("woke_mins", 0);
+            if (woke_mins > 1)
+            {
+                Toast.makeText(this, "You were awake for " + woke_mins + " minutes last night! You lose 10 points!", Toast.LENGTH_LONG).show();
+
+                streak = 0;
+                editor.putInt("streak", 0);
+
+                points -= 10;
+                if (points < 0) points = 0;
+                editor.putInt("points", points);
+
+                editor.putInt("woke_mins", 0);
+            }
+            else
+            {
+                Toast.makeText(this, "You were sleeping like a baby last night! You got 10 points!", Toast.LENGTH_LONG).show();
+
+                streak ++;
+                editor.putInt("streak", streak);
+
+                points += 10;
+                if (points > POINTS_TO_NEXT_LEVEL)
+                {
+                    points -= POINTS_TO_NEXT_LEVEL;
+                    level ++;
+                }
+                editor.putInt("points", points);
+                editor.putInt("level", level);
+            }
+
+            editor.commit();
+        }
+
+        ((TextView)findViewById(R.id.level)).setText("LEVEL: " + level);
+        ((TextView)findViewById(R.id.points)).setText("POINTS: " + points + "/" + POINTS_TO_NEXT_LEVEL);
+        ((ProgressBar)findViewById(R.id.progress)).setMax(POINTS_TO_NEXT_LEVEL);
+        ((ProgressBar)findViewById(R.id.progress)).setProgress(points);
+        ((TextView)findViewById(R.id.streak)).setText("SLEEP STREAK: " + streak + " DAYS");
 
         ((EditText)findViewById(R.id.wake_hours)).setText(Integer.valueOf(wake_hour).toString());
         ((EditText)findViewById(R.id.wake_mins)).setText(Integer.valueOf(wake_minute).toString());

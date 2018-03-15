@@ -1,11 +1,13 @@
 package com.tapkomet.sleepcontrol;
 
+import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
@@ -24,6 +26,9 @@ public class SleepAlarmActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sleep_alarm);
 
+        PowerManager pm = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
+        PowerManager.WakeLock wakeLock = pm.newWakeLock((PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP), "TAG");
+        wakeLock.acquire();
 
         sound_timer.scheduleAtFixedRate(new TimerTask()
         {
@@ -50,25 +55,29 @@ public class SleepAlarmActivity extends AppCompatActivity
         });
     }
 
-    @Override
-    public void onBackPressed()
+    public void stopProcess()
     {
         sound_timer.cancel();
         sound_timer.purge();
 
-        //new CheckUsageService().startService(new Intent());
+        startService((new Intent(this, CheckUsageService.class)));
 
+        KeyguardManager keyguardManager = (KeyguardManager) getApplicationContext().getSystemService(Context.KEYGUARD_SERVICE);
+        KeyguardManager.KeyguardLock keyguardLock = keyguardManager.newKeyguardLock("TAG");
+        keyguardLock.disableKeyguard();
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        stopProcess();
         super.onBackPressed();
     }
 
     @Override
     protected void onStop()
     {
-        sound_timer.cancel();
-        sound_timer.purge();
-
-        //new CheckUsageService().startService(new Intent());
-
+        stopProcess();
         super.onStop();
     }
 }

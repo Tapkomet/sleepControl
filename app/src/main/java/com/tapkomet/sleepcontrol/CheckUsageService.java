@@ -19,7 +19,6 @@ import java.util.Calendar;
 
 public class CheckUsageService extends IntentService
 {
-
     static boolean already_started = false;
 
     public CheckUsageService()
@@ -36,6 +35,7 @@ public class CheckUsageService extends IntentService
         {
             while (true)
             {
+                already_started = true;
                 Thread.sleep(60000);
 
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -80,11 +80,13 @@ public class CheckUsageService extends IntentService
 
                         SharedPreferences.Editor editor = preferences.edit();
                         editor.putInt("woke_mins", woke_minutes);
+                        editor.putBoolean("slept", true);
                         editor.commit();
                     }
                 }
             }
 
+            already_started = false;
             stopSelf();
         }
         catch (InterruptedException e)

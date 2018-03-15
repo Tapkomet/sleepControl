@@ -1,9 +1,13 @@
 package com.tapkomet.sleepcontrol;
 
+import android.app.KeyguardManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.PowerManager;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -29,6 +33,10 @@ public class WakeAlarmActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wake_alarm);
+
+        PowerManager pm = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
+        PowerManager.WakeLock wakeLock = pm.newWakeLock((PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP), "TAG");
+        wakeLock.acquire();
 
         makePuzzle();
 
@@ -84,6 +92,21 @@ public class WakeAlarmActivity extends AppCompatActivity
                 finish();
             }
         });
+
+
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+        editor.putBoolean("slept", true);
+        editor.commit();
+    }
+
+    public void stopProcess()
+    {
+        sound_timer.cancel();
+        sound_timer.purge();
+
+        KeyguardManager keyguardManager = (KeyguardManager) getApplicationContext().getSystemService(Context.KEYGUARD_SERVICE);
+        KeyguardManager.KeyguardLock keyguardLock = keyguardManager.newKeyguardLock("TAG");
+        keyguardLock.disableKeyguard();
     }
 
     @Override
@@ -93,15 +116,14 @@ public class WakeAlarmActivity extends AppCompatActivity
         time.add(Calendar.MINUTE, 5);
         alarmReceiver.setAlarm(context, time);
 
+        stopProcess();
         super.onBackPressed();
     }
 
     @Override
     protected void onStop()
     {
-        sound_timer.cancel();
-        sound_timer.purge();
-
+        stopProcess();
         super.onStop();
     }
 
