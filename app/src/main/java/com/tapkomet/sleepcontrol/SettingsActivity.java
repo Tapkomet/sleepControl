@@ -9,6 +9,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.view.View;
 import android.widget.Toast;
+import com.facebook.share.widget.ShareDialog;
+import com.facebook.share.model.ShareLinkContent;
+import android.net.Uri;
 
 
 import java.util.Calendar;
@@ -18,6 +21,12 @@ public class SettingsActivity extends AppCompatActivity
     AppCompatActivity activity = this;
 
     static final int POINTS_TO_NEXT_LEVEL = 100;
+
+    int level;
+    int points;
+    int streak;
+
+    ShareDialog shareDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -32,9 +41,9 @@ public class SettingsActivity extends AppCompatActivity
         int sleep_hour = preferences.getInt("sleep_hour", 7);
         int sleep_minute = preferences.getInt("sleep_minute", 0);
 
-        int level = preferences.getInt("level", 1);
-        int points = preferences.getInt("points", 0);
-        int streak = preferences.getInt("streak", 0);
+        level = preferences.getInt("level", 1);
+        points = preferences.getInt("points", 0);
+        streak = preferences.getInt("streak", 0);
 
         if (preferences.getBoolean("slept", false))
         {
@@ -121,6 +130,17 @@ public class SettingsActivity extends AppCompatActivity
                     setTimers();
             }
         });
+        shareDialog = new ShareDialog(this);
+        findViewById(R.id.share_button).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                facebookShare();
+            }
+        });
+
+
     }
 
     public void setTimers()
@@ -146,5 +166,13 @@ public class SettingsActivity extends AppCompatActivity
             time.add(Calendar.DAY_OF_MONTH, 1);
         SleepAlarmActivity.sleepAlarmReceiver.setAlarm(activity.getApplicationContext(), time);
 
+    }
+    public void facebookShare(){
+        ShareLinkContent content = new ShareLinkContent.Builder()
+                .setContentUrl(Uri.parse("https://play.google.com/store/apps/details?id=com.tt2kgames.xcomew"))
+                .setQuote("So far I've stuck to the sleeping schedule for "+
+                        streak+" days in a row and has earned "+points+" points")
+                .build();
+        shareDialog.show(content);
     }
 }
