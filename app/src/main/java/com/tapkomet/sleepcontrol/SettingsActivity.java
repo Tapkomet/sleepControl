@@ -7,11 +7,13 @@ import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.LinearLayout;
 import android.view.View;
 import android.widget.Toast;
 import com.facebook.share.widget.ShareDialog;
 import com.facebook.share.model.ShareLinkContent;
 import android.net.Uri;
+import com.facebook.ads.*;
 
 
 import java.util.Calendar;
@@ -27,6 +29,8 @@ public class SettingsActivity extends AppCompatActivity
     int streak;
 
     ShareDialog shareDialog;
+
+    private AdView adView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -140,7 +144,26 @@ public class SettingsActivity extends AppCompatActivity
             }
         });
 
+        // Instantiate an AdView view
+        adView = new AdView(this, "YOUR_PLACEMENT_ID", AdSize.BANNER_HEIGHT_50);
 
+        // Find the Ad Container
+        LinearLayout adContainer = (LinearLayout) findViewById(R.id.banner_container);
+
+        // Add the ad view to your activity layout
+        adContainer.addView(adView);
+
+        // Request an ad
+        adView.loadAd();
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (adView != null) {
+            adView.destroy();
+        }
+        super.onDestroy();
     }
 
     public void setTimers()

@@ -28,4 +28,5 @@ dependencies {
     implementation 'com.android.support:design:27.1.0'
     implementation 'com.facebook.android:facebook-android-sdk:[4,31)'
     compile 'com.facebook.android:facebook-share:[4,31)'
+    compile 'com.facebook.android:audience-network-sdk:4.+'
 }
