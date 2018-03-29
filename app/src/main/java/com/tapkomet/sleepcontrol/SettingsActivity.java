@@ -5,14 +5,9 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.LinearLayout;
 import android.view.View;
 import android.widget.Toast;
-import com.facebook.share.widget.ShareDialog;
-import com.facebook.share.model.ShareLinkContent;
-import android.net.Uri;
 import com.facebook.ads.*;
 
 
@@ -22,14 +17,6 @@ public class SettingsActivity extends AppCompatActivity
 {
     AppCompatActivity activity = this;
 
-    static final int POINTS_TO_NEXT_LEVEL = 100;
-
-    int level;
-    int points;
-    int streak;
-
-    ShareDialog shareDialog;
-
     private AdView adView;
 
     @Override
@@ -38,70 +25,9 @@ public class SettingsActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        int wake_hour = preferences.getInt("wake_hour", 7);
-        int wake_minute = preferences.getInt("wake_minute", 0);
-
-        int sleep_hour = preferences.getInt("sleep_hour", 7);
-        int sleep_minute = preferences.getInt("sleep_minute", 0);
-
-        level = preferences.getInt("level", 1);
-        points = preferences.getInt("points", 0);
-        streak = preferences.getInt("streak", 0);
-
-        if (preferences.getBoolean("slept", false))
-        {
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean("slept", false);
-
-            int woke_mins = preferences.getInt("woke_mins", 0);
-            if (woke_mins > 1)
-            {
-                Toast.makeText(this, "You were awake for " + woke_mins + " minutes last night! You lose 10 points!", Toast.LENGTH_LONG).show();
-
-                streak = 0;
-                editor.putInt("streak", 0);
-
-                points -= 10;
-                if (points < 0) points = 0;
-                editor.putInt("points", points);
-
-                editor.putInt("woke_mins", 0);
-            }
-            else
-            {
-                Toast.makeText(this, "You were sleeping like a baby last night! You got 10 points!", Toast.LENGTH_LONG).show();
-
-                streak ++;
-                editor.putInt("streak", streak);
-
-                points += 10;
-                if (points > POINTS_TO_NEXT_LEVEL)
-                {
-                    points -= POINTS_TO_NEXT_LEVEL;
-                    level ++;
-                }
-                editor.putInt("points", points);
-                editor.putInt("level", level);
-            }
-
-            editor.commit();
-        }
-
-        ((TextView)findViewById(R.id.level)).setText("LEVEL: " + level);
-        ((TextView)findViewById(R.id.points)).setText("POINTS: " + points + "/" + POINTS_TO_NEXT_LEVEL);
-        ((ProgressBar)findViewById(R.id.progress)).setMax(POINTS_TO_NEXT_LEVEL);
-        ((ProgressBar)findViewById(R.id.progress)).setProgress(points);
-        ((TextView)findViewById(R.id.streak)).setText("SLEEP STREAK: " + streak + " DAYS");
-
-        ((EditText)findViewById(R.id.wake_hours)).setText(Integer.valueOf(wake_hour).toString());
-        ((EditText)findViewById(R.id.wake_mins)).setText(Integer.valueOf(wake_minute).toString());
-        ((EditText)findViewById(R.id.sleep_hours)).setText(Integer.valueOf(sleep_hour).toString());
-        ((EditText)findViewById(R.id.sleep_mins)).setText(Integer.valueOf(sleep_minute).toString());
-
         setTimers();
 
-        findViewById(R.id.settime_button).setOnClickListener(new View.OnClickListener()
+        findViewById(R.id.set_settings).setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -126,23 +52,34 @@ public class SettingsActivity extends AppCompatActivity
                 if (sleep_m < 60) editor.putInt("sleep_minute", sleep_m);
                 else time_conversion_error = true;
 
+                int grace = Integer.valueOf(((EditText)findViewById(R.id.grace)).getText().toString());
+                editor.putInt("grace", grace);
+
                 editor.commit();
 
                 if (time_conversion_error)
                     Toast.makeText(getApplicationContext(), "Invalid time entered!",  Toast.LENGTH_LONG).show();
                 else
+                {
+                    Toast.makeText(getApplicationContext(), "New times are set.", Toast.LENGTH_LONG).show();
                     setTimers();
+                }
             }
         });
-        shareDialog = new ShareDialog(this);
-        findViewById(R.id.share_button).setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                facebookShare();
-            }
-        });
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        int wake_hour = preferences.getInt("wake_hour", 7);
+        int wake_minute = preferences.getInt("wake_minute", 0);
+
+        int sleep_hour = preferences.getInt("sleep_hour", 7);
+        int sleep_minute = preferences.getInt("sleep_minute", 0);
+        int grace = preferences.getInt("grace", 5);
+
+        ((EditText)findViewById(R.id.wake_hours)).setText(Integer.valueOf(wake_hour).toString());
+        ((EditText)findViewById(R.id.wake_mins)).setText(Integer.valueOf(wake_minute).toString());
+        ((EditText)findViewById(R.id.sleep_hours)).setText(Integer.valueOf(sleep_hour).toString());
+        ((EditText)findViewById(R.id.sleep_mins)).setText(Integer.valueOf(sleep_minute).toString());
+        ((EditText)findViewById(R.id.grace)).setText(Integer.valueOf(grace).toString());
 
         // Instantiate an AdView view
         adView = new AdView(this, "YOUR_PLACEMENT_ID", AdSize.BANNER_HEIGHT_50);
@@ -155,7 +92,6 @@ public class SettingsActivity extends AppCompatActivity
 
         // Request an ad
         adView.loadAd();
-
     }
 
     @Override
@@ -188,14 +124,5 @@ public class SettingsActivity extends AppCompatActivity
         if (time.compareTo(Calendar.getInstance()) < 0)
             time.add(Calendar.DAY_OF_MONTH, 1);
         SleepAlarmActivity.sleepAlarmReceiver.setAlarm(activity.getApplicationContext(), time);
-
-    }
-    public void facebookShare(){
-        ShareLinkContent content = new ShareLinkContent.Builder()
-                .setContentUrl(Uri.parse("https://play.google.com/store/apps/details?id=com.tt2kgames.xcomew"))
-                .setQuote("So far I've stuck to the sleeping schedule for "+
-                        streak+" days in a row and has earned "+points+" points")
-                .build();
-        shareDialog.show(content);
     }
 }
