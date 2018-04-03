@@ -44,7 +44,8 @@ public class MainActivity extends AppCompatActivity
             editor.putBoolean("slept", false);
 
             int woke_mins = preferences.getInt("woke_mins", 0);
-            if (woke_mins > 1)
+            int grace = preferences.getInt("grace", 1);
+            if (woke_mins > grace)
             {
                 Toast.makeText(this, "You were awake for " + woke_mins + " minutes last night! You lose 10 points!", Toast.LENGTH_LONG).show();
 
