@@ -5,6 +5,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.LinearLayout;
 import android.view.View;
 import android.widget.Toast;
@@ -18,6 +19,9 @@ public class SettingsActivity extends AppCompatActivity
     AppCompatActivity activity = this;
 
     private AdView adView;
+
+    static int currentSnoozes;
+    static int totalSnoozes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -52,8 +56,11 @@ public class SettingsActivity extends AppCompatActivity
                 if (sleep_m < 60) editor.putInt("sleep_minute", sleep_m);
                 else time_conversion_error = true;
 
-                int grace = Integer.valueOf(((EditText)findViewById(R.id.grace)).getText().toString());
-                editor.putInt("grace", grace);
+                Spinner spinner = findViewById(R.id.snoozes);
+                String selected = spinner.getSelectedItem().toString();
+                totalSnoozes = Integer.parseInt(selected);
+                currentSnoozes = totalSnoozes;
+
 
                 editor.commit();
 
@@ -61,7 +68,7 @@ public class SettingsActivity extends AppCompatActivity
                     Toast.makeText(getApplicationContext(), "Invalid time entered!",  Toast.LENGTH_LONG).show();
                 else
                 {
-                    Toast.makeText(getApplicationContext(), "New times are set.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "New settings are set.", Toast.LENGTH_LONG).show();
                     setTimers();
                 }
             }
@@ -74,12 +81,14 @@ public class SettingsActivity extends AppCompatActivity
         int sleep_hour = preferences.getInt("sleep_hour", 7);
         int sleep_minute = preferences.getInt("sleep_minute", 0);
         int grace = preferences.getInt("grace", 5);
+        int totalSnoozes = preferences.getInt("totalSnoozes", 3);
 
         ((EditText)findViewById(R.id.wake_hours)).setText(Integer.valueOf(wake_hour).toString());
         ((EditText)findViewById(R.id.wake_mins)).setText(Integer.valueOf(wake_minute).toString());
         ((EditText)findViewById(R.id.sleep_hours)).setText(Integer.valueOf(sleep_hour).toString());
         ((EditText)findViewById(R.id.sleep_mins)).setText(Integer.valueOf(sleep_minute).toString());
         ((EditText)findViewById(R.id.grace)).setText(Integer.valueOf(grace).toString());
+        ((Spinner)findViewById(R.id.snoozes)).setSelection(totalSnoozes);
 
         // Instantiate an AdView view
         adView = new AdView(this, "YOUR_PLACEMENT_ID", AdSize.BANNER_HEIGHT_50);

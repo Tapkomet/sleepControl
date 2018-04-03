@@ -27,6 +27,7 @@ public class WakeAlarmActivity extends AppCompatActivity
     public static WakeAlarmReceiver alarmReceiver = new WakeAlarmReceiver();
 
     int solution;
+    String snoozeText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -37,6 +38,11 @@ public class WakeAlarmActivity extends AppCompatActivity
         PowerManager pm = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
         PowerManager.WakeLock wakeLock = pm.newWakeLock((PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP), "TAG");
         wakeLock.acquire();
+
+        snoozeText = "Snoozes left: "+SettingsActivity.currentSnoozes;
+        ((TextView)findViewById(R.id.snoozes_text)).setText(snoozeText);
+
+
 
         makePuzzle();
 
@@ -68,8 +74,10 @@ public class WakeAlarmActivity extends AppCompatActivity
                 {
                     int written_solution = Integer.parseInt(solution_text);
 
-                    if (solution == written_solution)
+                    if (solution == written_solution) {
+                        SettingsActivity.currentSnoozes = SettingsActivity.totalSnoozes;
                         finish();
+                    }
                     else
                     {
                         ((EditText) findViewById(R.id.solution_text)).setText("");
@@ -85,13 +93,18 @@ public class WakeAlarmActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
+
                 Calendar time = Calendar.getInstance();
                 time.add(Calendar.MINUTE, 5);
                 alarmReceiver.setAlarm(context, time);
-
+                SettingsActivity.currentSnoozes--;
                 finish();
             }
         });
+
+        if(SettingsActivity.currentSnoozes <=0){
+            findViewById(R.id.snooze_button).setClickable(false);
+        }
 
 
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();

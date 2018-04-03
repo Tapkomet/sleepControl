@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">sleepControl</string>
     <string name="facebook_app_id">1627616200654748</string>
+    <string-array name="snoozelist">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
 </resources>

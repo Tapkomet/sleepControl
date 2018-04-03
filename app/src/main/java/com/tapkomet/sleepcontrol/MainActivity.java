@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.LinearLayout;
+import com.facebook.ads.*;
 
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
@@ -22,6 +24,8 @@ public class MainActivity extends AppCompatActivity
     int streak;
 
     ShareDialog shareDialog;
+
+    private AdView adView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -99,6 +103,26 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        // Instantiate an AdView view
+        adView = new AdView(this, "YOUR_PLACEMENT_ID", AdSize.BANNER_HEIGHT_50);
+
+        // Find the Ad Container
+        LinearLayout adContainer = (LinearLayout) findViewById(R.id.banner_container);
+
+        // Add the ad view to your activity layout
+        adContainer.addView(adView);
+
+        // Request an ad
+        adView.loadAd();
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (adView != null) {
+            adView.destroy();
+        }
+        super.onDestroy();
     }
 
     public void facebookShare(){
