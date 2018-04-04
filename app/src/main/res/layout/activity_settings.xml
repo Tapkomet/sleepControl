@@ -61,7 +61,8 @@
                         android:layout_weight="1"
                         android:ems="10"
                         android:inputType="number"
-                        android:textAlignment="textEnd" />
+                        android:textAlignment="textEnd"
+                        android:layout_gravity="end" />
 
                     <TextView
                         android:id="@+id/time_sep_sleep"
@@ -115,7 +116,8 @@
                         android:layout_weight="1"
                         android:ems="10"
                         android:inputType="number"
-                        android:textAlignment="textEnd" />
+                        android:textAlignment="textEnd"
+                        android:layout_gravity="end" />
 
                     <TextView
                         android:id="@+id/time_sep"
@@ -153,7 +155,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="GRACE PERIOD:"
-                    android:textAlignment="textEnd" />
+                    android:textAlignment="textEnd"
+                    android:layout_gravity="end"/>
 
                 <EditText
                     android:id="@+id/grace"
@@ -162,7 +165,8 @@
                     android:layout_weight="1"
                     android:ems="10"
                     android:inputType="numberSigned"
-                    android:textAlignment="textEnd" />
+                    android:textAlignment="textEnd"
+                    android:layout_gravity="end" />
 
                 <TextView
                     android:id="@+id/grace_label2"
@@ -188,7 +192,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="NUMBER OF SNOOZES:"
-                    android:textAlignment="textEnd" />
+                    android:textAlignment="textEnd"
+                    android:layout_gravity="end" />
 
                 <Spinner
                     android:id="@+id/snoozes"
@@ -198,7 +203,8 @@
                     android:ems="10"
                     android:entries="@array/snoozelist"
                     android:inputType="numberSigned"
-                    android:textAlignment="textEnd" />
+                    android:textAlignment="textEnd"
+                    android:layout_gravity="end" />
             </LinearLayout>
 
             <Space
