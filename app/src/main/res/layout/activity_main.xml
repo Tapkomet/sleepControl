@@ -10,30 +10,47 @@
         android:id="@+id/banner_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        />
+        android:orientation="vertical">
+
+    </LinearLayout>
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginEnd="24dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
         android:layout_weight="1"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <Button
+                android:id="@+id/settings_button"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="right"
+                android:layout_margin="10dp"
+                android:layout_marginRight="0dp"
+                android:layout_weight="1"
+                android:background="@drawable/gear"
+                android:fontFamily="sans-serif-condensed"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textStyle="italic" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_weight="1" />
+
             <TextView
                 android:id="@+id/level"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
                 android:layout_weight="1"
                 android:fontFamily="sans-serif-condensed"
                 android:text="LEVEL: 1"
@@ -50,6 +67,7 @@
                     android:id="@+id/points"
                     android:layout_width="240dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
                     android:layout_weight="1"
                     android:fontFamily="sans-serif-condensed"
                     android:maxLines="1"
@@ -62,6 +80,7 @@
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="319dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="30dp"
                     android:layout_weight="1"
                     android:indeterminate="false"
                     android:progress="10" />
@@ -72,37 +91,33 @@
                 android:id="@+id/streak"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
                 android:layout_weight="1"
                 android:fontFamily="sans-serif-condensed"
                 android:text="CURRENT STREAK: 0 DAYS"
                 android:textAlignment="center"
                 android:textSize="12sp" />
 
-            <Button
-                android:id="@+id/share_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_weight="1"
-                android:text="Share Content" />
-
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="61dp"
+                android:layout_height="30dp"
                 android:layout_weight="1" />
 
-            <Button
-                android:id="@+id/settings_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:fontFamily="sans-serif-condensed"
-                android:text="Settings"
-                android:textAlignment="center"
-                android:textAllCaps="false"
-                android:textStyle="italic" />
         </LinearLayout>
 
     </ScrollView>
+
+    <Button
+        android:id="@+id/share_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_weight="1"
+        android:text="Share your progress"
+        app:layout_constraintBottom_toBottomOf="@+id/scrollView2"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
