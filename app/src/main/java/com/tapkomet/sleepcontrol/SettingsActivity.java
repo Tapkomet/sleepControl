@@ -1,9 +1,16 @@
 package com.tapkomet.sleepcontrol;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.WindowManager;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.LinearLayout;
@@ -12,6 +19,7 @@ import android.widget.Toast;
 import com.facebook.ads.*;
 
 
+import java.io.File;
 import java.util.Calendar;
 
 public class SettingsActivity extends AppCompatActivity
@@ -29,7 +37,21 @@ public class SettingsActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
         setTimers();
+
+        findViewById(R.id.choose_audio).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Tone");
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, (Uri) null);
+                startActivityForResult(intent, 5);
+            }});
 
         findViewById(R.id.set_settings).setOnClickListener(new View.OnClickListener()
         {
@@ -56,11 +78,18 @@ public class SettingsActivity extends AppCompatActivity
                 if (sleep_m < 60) editor.putInt("sleep_minute", sleep_m);
                 else time_conversion_error = true;
 
+                editor.putBoolean("skip_monday", ((CheckBox)findViewById(R.id.skip_monday)).isChecked());
+                editor.putBoolean("skip_tuesday", ((CheckBox)findViewById(R.id.skip_tuesday)).isChecked());
+                editor.putBoolean("skip_wednesday", ((CheckBox)findViewById(R.id.skip_wednesday)).isChecked());
+                editor.putBoolean("skip_thursday", ((CheckBox)findViewById(R.id.skip_thursday)).isChecked());
+                editor.putBoolean("skip_friday", ((CheckBox)findViewById(R.id.skip_friday)).isChecked());
+                editor.putBoolean("skip_saturday", ((CheckBox)findViewById(R.id.skip_saturday)).isChecked());
+                editor.putBoolean("skip_sunday", ((CheckBox)findViewById(R.id.skip_sunday)).isChecked());
+
                 Spinner spinner = findViewById(R.id.snoozes);
                 String selected = spinner.getSelectedItem().toString();
                 totalSnoozes = Integer.parseInt(selected);
                 currentSnoozes = totalSnoozes;
-
 
                 editor.commit();
 
@@ -89,6 +118,13 @@ public class SettingsActivity extends AppCompatActivity
         ((EditText)findViewById(R.id.sleep_mins)).setText(Integer.valueOf(sleep_minute).toString());
         ((EditText)findViewById(R.id.grace)).setText(Integer.valueOf(grace).toString());
         ((Spinner)findViewById(R.id.snoozes)).setSelection(totalSnoozes);
+        ((CheckBox)findViewById(R.id.skip_monday)).setChecked(preferences.getBoolean("skip_monday", false));
+        ((CheckBox)findViewById(R.id.skip_tuesday)).setChecked(preferences.getBoolean("skip_tuesday", false));
+        ((CheckBox)findViewById(R.id.skip_wednesday)).setChecked(preferences.getBoolean("skip_wednesday", false));
+        ((CheckBox)findViewById(R.id.skip_thursday)).setChecked(preferences.getBoolean("skip_thursday", false));
+        ((CheckBox)findViewById(R.id.skip_friday)).setChecked(preferences.getBoolean("skip_friday", false));
+        ((CheckBox)findViewById(R.id.skip_saturday)).setChecked(preferences.getBoolean("skip_saturday", true));
+        ((CheckBox)findViewById(R.id.skip_sunday)).setChecked(preferences.getBoolean("skip_sunday", true));
 
         // Instantiate an AdView view
         adView = new AdView(this, "YOUR_PLACEMENT_ID", AdSize.BANNER_HEIGHT_50);
@@ -101,6 +137,23 @@ public class SettingsActivity extends AppCompatActivity
 
         // Request an ad
         adView.loadAd();
+    }
+
+    @Override
+    protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent)
+    {
+        if (resultCode == Activity.RESULT_OK && requestCode == 5)
+        {
+            Uri uri = intent.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+            if (uri != null)
+            {
+                Log.d("RINGTONE", uri.toString());
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("ringtone", uri.toString());
+                editor.commit();
+            }
+        }
     }
 
     @Override

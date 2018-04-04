@@ -2,7 +2,10 @@ package com.tapkomet.sleepcontrol;
 
 import android.app.KeyguardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -10,11 +13,13 @@ import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -23,11 +28,13 @@ public class WakeAlarmActivity extends AppCompatActivity
 {
     final Context context = this;
 
-    Timer sound_timer = new Timer();
     public static WakeAlarmReceiver alarmReceiver = new WakeAlarmReceiver();
 
     int solution;
     String snoozeText;
+
+    MediaPlayer mp;
+    Uri data_uri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -42,24 +49,20 @@ public class WakeAlarmActivity extends AppCompatActivity
         snoozeText = "Snoozes left: "+SettingsActivity.currentSnoozes;
         ((TextView)findViewById(R.id.snoozes_text)).setText(snoozeText);
 
-
-
         makePuzzle();
 
-        sound_timer.scheduleAtFixedRate(new TimerTask()
+        mp = new MediaPlayer();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        try
         {
-            @Override
-            public void run()
-            {
-                try
-                {
-                    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                    Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-                    r.play();
-                } catch (Exception e) { e.printStackTrace(); }
-            }
-        },
-        0, 1000);
+            mp.setDataSource(preferences.getString("ringtone", ""));
+            mp.prepare();
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        mp.setLooping(true);
+        mp.start();
 
         findViewById(R.id.wake_button).setOnClickListener(new View.OnClickListener()
         {
@@ -114,9 +117,6 @@ public class WakeAlarmActivity extends AppCompatActivity
 
     public void stopProcess()
     {
-        sound_timer.cancel();
-        sound_timer.purge();
-
         KeyguardManager keyguardManager = (KeyguardManager) getApplicationContext().getSystemService(Context.KEYGUARD_SERVICE);
         KeyguardManager.KeyguardLock keyguardLock = keyguardManager.newKeyguardLock("TAG");
         keyguardLock.disableKeyguard();

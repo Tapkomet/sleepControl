@@ -1,6 +1,7 @@
 package com.tapkomet.sleepcontrol;
 
 import android.content.*;
+import android.icu.util.Calendar;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -38,44 +39,72 @@ public class MainActivity extends AppCompatActivity
         points = preferences.getInt("points", 0);
         streak = preferences.getInt("streak", 0);
 
-        if (preferences.getBoolean("slept", false))
+        boolean skip_day = false;
+
+        Calendar calendar;
+        int day = 0;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N)
+        {
+            calendar = Calendar.getInstance();
+            day = calendar.get(Calendar.DAY_OF_WEEK);
+        }
+
+        switch (day) {
+            case Calendar.MONDAY: if (preferences.getBoolean("skip_monday", false)) skip_day = true; break;
+            case Calendar.TUESDAY: if (preferences.getBoolean("skip_tuesday", false)) skip_day = true; break;
+            case Calendar.WEDNESDAY: if (preferences.getBoolean("skip_wednesday", false)) skip_day = true; break;
+            case Calendar.THURSDAY: if (preferences.getBoolean("skip_thursday", false)) skip_day = true; break;
+            case Calendar.FRIDAY: if (preferences.getBoolean("skip_friday", false)) skip_day = true; break;
+            case Calendar.SATURDAY: if (preferences.getBoolean("skip_saturday", false)) skip_day = true; break;
+            case Calendar.SUNDAY: if (preferences.getBoolean("skip_sunday", false)) skip_day = true; break;
+        }
+
+        if (skip_day)
         {
             SharedPreferences.Editor editor = preferences.edit();
             editor.putBoolean("slept", false);
-
-            int woke_mins = preferences.getInt("woke_mins", 0);
-            int grace = preferences.getInt("grace", 1);
-            if (woke_mins > grace)
-            {
-                Toast.makeText(this, "You were awake for " + woke_mins + " minutes last night! You lose 10 points!", Toast.LENGTH_LONG).show();
-
-                streak = 0;
-                editor.putInt("streak", 0);
-
-                points -= 10;
-                if (points < 0) points = 0;
-                editor.putInt("points", points);
-
-                editor.putInt("woke_mins", 0);
-            }
-            else
-            {
-                Toast.makeText(this, "You were sleeping like a baby last night! You got 10 points!", Toast.LENGTH_LONG).show();
-
-                streak ++;
-                editor.putInt("streak", streak);
-
-                points += 10;
-                if (points > POINTS_TO_NEXT_LEVEL)
-                {
-                    points -= POINTS_TO_NEXT_LEVEL;
-                    level ++;
-                }
-                editor.putInt("points", points);
-                editor.putInt("level", level);
-            }
-
             editor.commit();
+        }
+        else
+        {
+            if (preferences.getBoolean("slept", false))
+            {
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putBoolean("slept", false);
+
+                int woke_mins = preferences.getInt("woke_mins", 0);
+                int grace = preferences.getInt("grace", 1);
+                if (woke_mins > grace)
+                {
+                    Toast.makeText(this, "You were awake for " + woke_mins + " minutes last night! You lose 10 points!", Toast.LENGTH_LONG).show();
+
+                    streak = 0;
+                    editor.putInt("streak", 0);
+
+                    points -= 10;
+                    if (points < 0) points = 0;
+                    editor.putInt("points", points);
+
+                    editor.putInt("woke_mins", 0);
+                } else
+                {
+                    Toast.makeText(this, "You were sleeping like a baby last night! You got 10 points!", Toast.LENGTH_LONG).show();
+
+                    streak++;
+                    editor.putInt("streak", streak);
+
+                    points += 10;
+                    if (points > POINTS_TO_NEXT_LEVEL)
+                    {
+                        points -= POINTS_TO_NEXT_LEVEL;
+                        level++;
+                    }
+                    editor.putInt("points", points);
+                    editor.putInt("level", level);
+                }
+
+                editor.commit();
+            }
         }
 
         ((TextView)findViewById(R.id.level)).setText("LEVEL: " + level);
