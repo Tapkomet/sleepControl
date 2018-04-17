@@ -32,9 +32,51 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        performSetup();
+
+
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        Toast.makeText(this, "Welcome back!", Toast.LENGTH_LONG).show();
+        performSetup();
+    }
+
+    /*@Override
+    protected void onPause()
+    {
+        super.onPause();
+        Toast.makeText(this, "Pause?!", Toast.LENGTH_LONG).show();
+    }*/
+
+    @Override
+    protected void onDestroy() {
+        if (adView != null) {
+            adView.destroy();
+        }
+        super.onDestroy();
+    }
+
+    public void facebookShare(){
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        Toast.makeText(this, "Slept:" +preferences.getBoolean("slept", false), Toast.LENGTH_LONG).show();
+
+        /*ShareLinkContent content = new ShareLinkContent.Builder()
+                .setContentUrl(Uri.parse("https://play.google.com/store/apps/details?id=com.tt2kgames.xcomew"))
+                .setQuote("So far I've stuck to the sleeping schedule for "+
+                        streak+" days in a row and has earned "+points+" points")
+                .build();
+        shareDialog.show(content);*/
+    }
+
+    public void performSetup(){
+        setContentView(R.layout.activity_main);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
         level = preferences.getInt("level", 1);
         points = preferences.getInt("points", 0);
         streak = preferences.getInt("streak", 0);
@@ -48,7 +90,6 @@ public class MainActivity extends AppCompatActivity
             calendar = Calendar.getInstance();
             day = calendar.get(Calendar.DAY_OF_WEEK);
         }
-
         switch (day) {
             case Calendar.MONDAY: if (preferences.getBoolean("skip_monday", false)) skip_day = true; break;
             case Calendar.TUESDAY: if (preferences.getBoolean("skip_tuesday", false)) skip_day = true; break;
@@ -144,23 +185,5 @@ public class MainActivity extends AppCompatActivity
 
         // Request an ad
         adView.loadAd();
-
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (adView != null) {
-            adView.destroy();
-        }
-        super.onDestroy();
-    }
-
-    public void facebookShare(){
-        ShareLinkContent content = new ShareLinkContent.Builder()
-                .setContentUrl(Uri.parse("https://play.google.com/store/apps/details?id=com.tt2kgames.xcomew"))
-                .setQuote("So far I've stuck to the sleeping schedule for "+
-                        streak+" days in a row and has earned "+points+" points")
-                .build();
-        shareDialog.show(content);
     }
 }

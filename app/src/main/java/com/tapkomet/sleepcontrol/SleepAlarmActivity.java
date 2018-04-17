@@ -3,11 +3,13 @@ package com.tapkomet.sleepcontrol;
 import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
@@ -17,6 +19,8 @@ import java.util.TimerTask;
 public class SleepAlarmActivity extends AppCompatActivity
 {
     Timer sound_timer = new Timer();
+
+    Ringtone r;
 
     public static SleepAlarmReceiver sleepAlarmReceiver = new SleepAlarmReceiver();
 
@@ -30,26 +34,28 @@ public class SleepAlarmActivity extends AppCompatActivity
         PowerManager.WakeLock wakeLock = pm.newWakeLock((PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP), "TAG");
         wakeLock.acquire();
 
-        sound_timer.scheduleAtFixedRate(new TimerTask()
+        sound_timer.schedule(new TimerTask()
         {
             @Override
             public void run()
             {
                 try
                 {
-                    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                    Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    Uri notification = Uri.parse(preferences.getString("ringtone", RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString()));
+                    r = RingtoneManager.getRingtone(getApplicationContext(), notification);
                     r.play();
                 } catch (Exception e) { e.printStackTrace(); }
             }
         },
-        0, 1000);
+        0);
 
         findViewById(R.id.sleep_button).setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
+                r.stop();
                 finish();
             }
         });

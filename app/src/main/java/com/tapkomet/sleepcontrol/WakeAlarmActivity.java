@@ -33,8 +33,9 @@ public class WakeAlarmActivity extends AppCompatActivity
     int solution;
     String snoozeText;
 
-    MediaPlayer mp;
-    Uri data_uri;
+    Timer sound_timer = new Timer();
+
+    Ringtone r;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -51,18 +52,21 @@ public class WakeAlarmActivity extends AppCompatActivity
 
         makePuzzle();
 
-        mp = new MediaPlayer();
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        try
+        sound_timer.schedule(new TimerTask()
         {
-            mp.setDataSource(preferences.getString("ringtone", ""));
-            mp.prepare();
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        mp.setLooping(true);
-        mp.start();
+            @Override
+            public void run()
+            {
+                try
+                {
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    Uri notification = Uri.parse(preferences.getString("ringtone", RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString()));
+                    r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                    r.play();
+                } catch (Exception e) { e.printStackTrace(); }
+            }
+        },
+        0);
 
         findViewById(R.id.wake_button).setOnClickListener(new View.OnClickListener()
         {
@@ -80,6 +84,7 @@ public class WakeAlarmActivity extends AppCompatActivity
                     if (solution == written_solution) {
                         SettingsActivity.currentSnoozes = SettingsActivity.totalSnoozes;
                         finish();
+                        r.stop();
                     }
                     else
                     {
@@ -102,6 +107,7 @@ public class WakeAlarmActivity extends AppCompatActivity
                 alarmReceiver.setAlarm(context, time);
                 SettingsActivity.currentSnoozes--;
                 finish();
+                r.stop();
             }
         });
 
@@ -117,6 +123,8 @@ public class WakeAlarmActivity extends AppCompatActivity
 
     public void stopProcess()
     {
+        sound_timer.cancel();
+        sound_timer.purge();
         KeyguardManager keyguardManager = (KeyguardManager) getApplicationContext().getSystemService(Context.KEYGUARD_SERVICE);
         KeyguardManager.KeyguardLock keyguardLock = keyguardManager.newKeyguardLock("TAG");
         keyguardLock.disableKeyguard();

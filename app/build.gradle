@@ -27,8 +27,8 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation 'com.android.support:design:27.0.2'
     implementation 'com.facebook.android:facebook-android-sdk:[4,31)'
-    compile 'com.facebook.android:facebook-share:[4,31)'
-    compile 'com.facebook.android:audience-network-sdk:4.+'
+    implementation 'com.facebook.android:facebook-share:[4,31)'
+    implementation 'com.facebook.android:audience-network-sdk:4.+'
 }
 
 task deleteJar(type: Delete) {
