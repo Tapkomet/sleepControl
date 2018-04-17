@@ -41,7 +41,6 @@ public class MainActivity extends AppCompatActivity
     protected void onResume()
     {
         super.onResume();
-        Toast.makeText(this, "Welcome back!", Toast.LENGTH_LONG).show();
         performSetup();
     }
 
